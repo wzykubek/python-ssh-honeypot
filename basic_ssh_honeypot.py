@@ -35,6 +35,8 @@ def handle_cmd(cmd, chan, ip):
         response = "root"
     elif cmd.startswith("cat root.txt"):
         response = "Flag:NDQgNjUgNjYgNjkgNmUgNjkgNzQgNjUgNmMgNzkgMjAgNmUgNmYgNzQgMjAgNjEgMjAgNDggNmYgNmUgNjUgNzkgNzAgNmYgNzQ="
+    else:
+        response = f"{cmd}: command not found"
 
     if response != '':
         logging.info('Response from honeypot ({}): '.format(ip, response))
