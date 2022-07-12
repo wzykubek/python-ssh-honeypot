@@ -50,7 +50,12 @@ class BasicSshHoneypot(paramiko.ServerInterface):
 
     def __init__(self, client_ip):
         self.client_ip = client_ip
-        self.event = threading.Event()
+        print('!!! Exception: {}: {}'.format(err.__class__, err))
+        try:
+            transport.close()
+        except Exception:
+            pass
+
 
     def check_channel_request(self, kind):
         logging.info('client called check_channel_request ({}): {}'.format(
@@ -91,7 +96,7 @@ def handle_connection(client, addr):
             transport.start_server(server=server)
 
         except paramiko.SSHException:
-            print('*** SSH negotiatifon ailed.')
+            print('*** SSH negotiatifon failed.')
             raise Exception("SSH negotiation failed")
 
         # wait for auth
@@ -178,7 +183,7 @@ def start_server(port, bind):
         traceback.print_exc()
         sys.exit(1)
 
-    threads = []
+    
     while True:
         try:
             sock.listen(100)
