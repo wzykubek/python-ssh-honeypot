@@ -3,15 +3,12 @@ import argparse
 import threading
 import socket
 import sys
-import os
 import traceback
 import logging
-import json
 import logging
 import paramiko
-from datetime import datetime
 from binascii import hexlify
-from paramiko.py3compat import b, u, decodebytes
+from paramiko.py3compat import u
 
 HOST_KEY = paramiko.RSAKey(filename='server.key')
 SSH_BANNER = "SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1"
@@ -34,7 +31,7 @@ def handle_cmd(cmd, chan, ip):
     if cmd.startswith("ls"):
         response = "users.txt"
     elif cmd.startswith("pwd"):
-        response = "/home/root"
+        response = f"/root/"
 
     if response != '':
         logging.info('Response from honeypot ({}): '.format(ip, response))
@@ -50,7 +47,7 @@ class BasicSshHoneypot(paramiko.ServerInterface):
         self.client_ip = client_ip
         self.event = threading.Event()
 
-    def check_channel_request(self, kind, chanid):
+    def check_channel_request(self, kind):
         logging.info('client called check_channel_request ({}): {}'.format(
                     self.client_ip, kind))
         if kind == 'session':
@@ -73,20 +70,6 @@ class BasicSshHoneypot(paramiko.ServerInterface):
                     self.client_ip, username, password))
         return paramiko.AUTH_SUCCESSFUL
 
-    def check_channel_shell_request(self, channel):
-        self.event.set()
-        return True
-
-    def check_channel_pty_request(self, channel, term, width, height, pixelwidth, pixelheight, modes):
-        return True
-
-    def check_channel_exec_request(self, channel, command):
-        command_text = str(command.decode("utf-8"))
-
-        logging.info('client sent command via check_channel_exec_request ({}): {}'.format(
-                    self.client_ip, username, command))
-        return True
-
 
 def handle_connection(client, addr):
 
@@ -96,7 +79,7 @@ def handle_connection(client, addr):
 
     try:
         transport = paramiko.Transport(client)
-        transport.add_server_key(HOST_KEY)
+        #transport.add_server_key(HOST_KEY)
         transport.local_version = SSH_BANNER # Change banner to appear more convincing
         server = BasicSshHoneypot(client_ip)
         try:
@@ -156,7 +139,7 @@ def handle_connection(client, addr):
                 logging.info('Command receied ({}): {}'.format(client_ip, command))
 
                 if command == "exit":
-                    settings.addLogEntry("Connection closed (via exit command): " + client_ip + "\n")
+                    logging.info("Connection closed (via exit command): " + client_ip + "\n")
                     run = False
 
                 else:
@@ -201,10 +184,6 @@ def start_server(port, bind):
             traceback.print_exc()
         new_thread = threading.Thread(target=handle_connection, args=(client, addr))
         new_thread.start()
-        threads.append(new_thread)
-
-    for thread in threads:
-        thread.join()
 
 
 if __name__ == "__main__":
