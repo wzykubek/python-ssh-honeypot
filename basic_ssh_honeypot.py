@@ -26,12 +26,15 @@ logging.basicConfig(
 
 
 def handle_cmd(cmd, chan, ip):
-
     response = ""
     if cmd.startswith("ls"):
-        response = "users.txt"
+        response = "root.txt"
     elif cmd.startswith("pwd"):
-        response = f"/root/"
+        response = "/root"
+    elif cmd.startswith("whoami"):
+        response = "root"
+    elif cmd.startswith("cat root.txt"):
+        response = "Flag:NDQgNjUgNjYgNjkgNmUgNjkgNzQgNjUgNmMgNzkgMjAgNmUgNmYgNzQgMjAgNjEgMjAgNDggNmYgNmUgNjUgNzkgNzAgNmYgNzQ="
 
     if response != '':
         logging.info('Response from honeypot ({}): '.format(ip, response))
@@ -86,7 +89,7 @@ def handle_connection(client, addr):
             transport.start_server(server=server)
 
         except paramiko.SSHException:
-            print('*** SSH negotiation failed.')
+            print('*** SSH negotiatifon ailed.')
             raise Exception("SSH negotiation failed")
 
         # wait for auth
@@ -136,7 +139,7 @@ def handle_connection(client, addr):
                 
                 chan.send("\r\n")
                 command = command.rstrip()
-                logging.info('Command receied ({}): {}'.format(client_ip, command))
+                logging.info('Command received ({}): {}'.format(client_ip, command))
 
                 if command == "exit":
                     logging.info("Connection closed (via exit command): " + client_ip + "\n")
