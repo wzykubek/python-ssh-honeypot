@@ -5,7 +5,6 @@ import socket
 import sys
 import traceback
 import logging
-import logging
 import paramiko
 from binascii import hexlify
 from paramiko.py3compat import u
@@ -39,7 +38,7 @@ def handle_cmd(cmd, chan, ip):
         response = f"{cmd}: command not found"
 
     if response != '':
-        logging.info('Response from honeypot ({}): '.format(ip, response))
+        logging.info('Response from honeypot ({}) - Command: '.format(ip, response))
         response = response + "\r\n"
     chan.send(response)
 
@@ -57,19 +56,19 @@ class BasicSshHoneypot(paramiko.ServerInterface):
     def check_channel_request(self, kind, catchall):
         logging.info('client called check_channel_request ({}): {}'.format(
                     self.client_ip, kind))
-        print(f"Self: {self}, Kind: {kind}, Catcall: {catchall}")
+        print(f"Self: {self}, Kind: {kind}, Catchall: {catchall}")
         if kind == 'session':
             return paramiko.OPEN_SUCCEEDED
 
     def get_allowed_auths(self, username):
         logging.info('client called get_allowed_auths ({}) with username {}'.format(
                     self.client_ip, username))
-        return "password"
+        return "password"#publickey
 
     def check_auth_password(self, username, password):
-        print(f"Username:{username},Password:{password}")
+        print(f"Username:{username},Password:{password}, IP")
         if username == "root" and password == "Password123":
-            logging.info('successful login ({}): username: {}, password: {}'.format(
+            logging.i('successful login ({}): username: {}, password: {}'.format(
                     self.client_ip, username, password))
             print("Successful Login")
             return paramiko.AUTH_SUCCESSFUL 
