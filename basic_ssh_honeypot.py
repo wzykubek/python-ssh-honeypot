@@ -170,7 +170,7 @@ def handle_connection(client, addr):
                 command = ""
                 while not command.endswith("\r"):
                     transport = chan.recv(1024)
-                    print(client_ip+"- received:",transport)
+                    #print(client_ip+"- received:",transport)
                     # Echo input to psuedo-simulate a basic terminal
                     if(
                         transport != UP_KEY
