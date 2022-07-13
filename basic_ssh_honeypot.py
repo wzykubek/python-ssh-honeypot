@@ -64,13 +64,7 @@ class BasicSshHoneypot(paramiko.ServerInterface):
     def get_allowed_auths(self, username):
         logging.info('client called get_allowed_auths ({}) with username {}'.format(
                     self.client_ip, username))
-        return "publickey,password"
-
-    #def check_auth_publickey(self, username, key):
-    #    fingerprint = u(hexlify(key.get_fingerprint()))
-    #    logging.info('client public key ({}): username: {}, key name: {}, md5 fingerprint: {}, base64: {}, bits: {}'.format(
-    #                self.client_ip, username, key.get_name(), fingerprint, key.get_base64(), key.get_bits()))
-    #    return paramiko.AUTH_PARTIALLY_SUCCESSFUL        
+        return "password"
 
     def check_auth_password(self, username, password):
         print(f"Username:{username},Password:{password}")
