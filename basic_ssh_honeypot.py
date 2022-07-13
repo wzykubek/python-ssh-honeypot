@@ -73,7 +73,6 @@ class BasicSshHoneypot(paramiko.ServerInterface):
     #    return paramiko.AUTH_PARTIALLY_SUCCESSFUL        
 
     def check_auth_password(self, username, password):
-        # Accept all passwords as valid by default
         print(f"Username:{username},Password:{password}")
         if username == "root" and password == "Password123":
             logging.info('successful login ({}): username: {}, password: {}'.format(
@@ -112,6 +111,20 @@ class BasicSshHoneypot(paramiko.ServerInterface):
             return paramiko.AUTH_FAILED
         
 
+    def check_channel_shell_request(self, channel):
+        self.event.set()
+        return True
+
+    def check_channel_pty_request(self, channel, term, width, height, pixelwidth, pixelheight, modes):
+        return True
+
+    def check_channel_exec_request(self, channel, command):
+        command_text = str(command.decode("utf-8"))
+
+        logging.info('client sent command via check_channel_exec_request ({}): {}'.format(
+                    self.client_ip, username, command))
+        return True
+
 
 def handle_connection(client, addr):
 
@@ -132,12 +145,12 @@ def handle_connection(client, addr):
             raise Exception("SSH negotiation failed")
 
         # wait for auth
-        chan = transport.accept(100)
+        chan = transport.accept(10)
         if chan is None:
             print('*** No channel (from '+client_ip+').')
             raise Exception("No channel")
         
-        chan.settimeout(100)
+        chan.settimeout(10)
 
         if transport.remote_mac != '':
             logging.info('Client mac ({}): {}'.format(client_ip, transport.remote_mac))
