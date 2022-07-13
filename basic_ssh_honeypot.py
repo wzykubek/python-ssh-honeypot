@@ -181,7 +181,7 @@ def handle_connection(client, addr):
                     handle_cmd(command, chan, client_ip)
 
         except Exception as err:
-            print('!!! Exception: {}: {}'.format(err.__class__, err))
+            print('!!! Exception1: {}: {}'.format(err.__class__, err))
             try:
                 transport.close()
             except Exception:
@@ -190,7 +190,7 @@ def handle_connection(client, addr):
         chan.close()
 
     except Exception as err:
-        print('!!! Exception: {}: {}'.format(err.__class__, err))
+        print('!!! Exception2: {}: {}'.format(err.__class__, err))
         try:
             transport.close()
         except Exception:
