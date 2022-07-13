@@ -1,0 +1,40 @@
+//ALERT PARSER - "Failed SSH Bruteforce" is a parameter - FUNCTION  //
+SecurityAlert
+| where AlertName == "Failed SSH Bruteforce"
+//Convert into dynamic datatype and expand
+| extend EntitiesDynamicArray = parse_json(tostring(Entities))
+| extend Address = tostring(EntitiesDynamicArray[0].Address)
+| extend Username = tostring(EntitiesDynamicArray[1].Name)
+| extend HostName = tostring(EntitiesDynamicArray[2].HostName)
+| project Address, Username, HostName//Returns IP Address, Username and HostName
+
+//Failed SSH Bruteforce - !!!!FIX THIS!!!! - Return ONE IP, User and Computer per alert //
+Syslog
+//Any failed login
+| where SyslogMessage startswith "Failed Password"
+| where SyslogMessage !contains "invalid user"//Stops logs filling with invalid user bruteforce
+//Create Sentinel usable fields for User and IP Address
+| extend User = extract("for(?s)(.*)from", 1, SyslogMessage)
+| extend IPaddr = extract("(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.(([0-9]{1,3})))", 1, SyslogMessage) 
+| project HostName, SyslogMessage, EventTime, IPaddr, User
+
+
+//Detect Successful SSH bruteforce - Hardcoded JSON parsing - Fix Initial Alert//
+let MaliciousAddress = (AlertParser("Failed SSH Bruteforce")
+    | project Address
+    );
+let VictimUser = (AlertParser("Failed SSH Bruteforce")
+    | project Username
+    );
+let VictimMachine = (AlertParser("Failed SSH Bruteforce")
+    | project HostName
+    );
+Syslog
+| where Facility == "auth"
+| where SyslogMessage startswith "Accepted password for"
+| extend User = extract("for(?s)(.*)from", 1, SyslogMessage)
+| extend IPaddr = extract("(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.(([0-9]{1,3})))", 1, SyslogMessage) 
+| where IPaddr in (MaliciousAddress)
+    and User in (VictimUser)
+    and Computer in (VictimMachine)
+| project TimeGenerated, User, IPaddr, Computer
