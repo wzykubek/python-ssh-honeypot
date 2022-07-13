@@ -58,9 +58,10 @@ class BasicSshHoneypot(paramiko.ServerInterface):
             pass
 
 
-    def check_channel_request(self, kind):
+    def check_channel_request(self, kind, catchall):
         logging.info('client called check_channel_request ({}): {}'.format(
                     self.client_ip, kind))
+        print(f"Self: {self}, Kind: {kind}, Catcall: {catchall}")
         if kind == 'session':
             return paramiko.OPEN_SUCCEEDED
 
