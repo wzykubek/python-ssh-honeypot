@@ -77,6 +77,7 @@ class BasicSshHoneypot(paramiko.ServerInterface):
 
     def check_auth_password(self, username, password):
         # Accept all passwords as valid by default
+        print(f"Username:{username},Password:{password}")
         if username == "root" and password == "Password123":
             logging.info('successful login ({}): username: {}, password: {}'.format(
                     self.client_ip, username, password))
@@ -105,6 +106,7 @@ class BasicSshHoneypot(paramiko.ServerInterface):
             logging.info('failed login ({}): username: {}, password: {}'.format(
                     self.client_ip, username, password))
             return paramiko.AUTH_FAILED
+        
 
 
 def handle_connection(client, addr):
