@@ -76,9 +76,34 @@ class BasicSshHoneypot(paramiko.ServerInterface):
 
     def check_auth_password(self, username, password):
         # Accept all passwords as valid by default
-        logging.info('new client credentials ({}): username: {}, password: {}'.format(
+        if username == "root" and password == "Password123":
+            logging.info('successful login ({}): username: {}, password: {}'.format(
                     self.client_ip, username, password))
-        return paramiko.AUTH_SUCCESSFUL
+            return paramiko.AUTH_SUCCESSFUL 
+        elif username == "root" and password == "root":
+            logging.info('successful login ({}): username: {}, password: {}'.format(
+                    self.client_ip, username, password))
+            return paramiko.AUTH_SUCCESSFUL
+        elif username == "root" and password == "123456":
+            logging.info('successful login ({}): username: {}, password: {}'.format(
+                    self.client_ip, username, password))
+            return paramiko.AUTH_SUCCESSFUL
+        elif username == "root" and password == "654321":
+            logging.info('successful login ({}): username: {}, password: {}'.format(
+                    self.client_ip, username, password))
+            return paramiko.AUTH_SUCCESSFUL
+        elif username == "root" and password == "rockyou":
+            logging.info('successful login ({}): username: {}, password: {}'.format(
+                    self.client_ip, username, password))
+            return paramiko.AUTH_SUCCESSFUL
+        elif username == "root" and password == "iloveyou":
+            logging.info('successful login ({}): username: {}, password: {}'.format(
+                    self.client_ip, username, password))
+            return paramiko.AUTH_SUCCESSFUL
+        else:
+            logging.info('failed login ({}): username: {}, password: {}'.format(
+                    self.client_ip, username, password))
+            return paramiko.AUTH_FAILED
 
 
 def handle_connection(client, addr):
