@@ -48,13 +48,13 @@ class BasicSshHoneypot(paramiko.ServerInterface):
 
     client_ip = None
 
-    def __init__(self, client_ip):
-        self.client_ip = client_ip
-        print('!!! Exception: {}: {}'.format(err.__class__, err))
-        try:
-            transport.close()
-        except Exception:
-            pass
+    #def __init__(self, client_ip):
+    #    self.client_ip = client_ip
+    #    print('!!! Exception: {}: {}'.format(err.__class__, err))
+    #    try:
+    #        transport.close()
+    #    except Exception:
+    #        pass
 
 
     def check_channel_request(self, kind):
