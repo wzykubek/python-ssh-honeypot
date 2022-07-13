@@ -52,7 +52,7 @@ class BasicSshHoneypot(paramiko.ServerInterface):
         self.client_ip = client_ip
         print("got here fine")
         try:
-            #transport.close()
+            transport.close()
             pass
         except Exception:
             pass
