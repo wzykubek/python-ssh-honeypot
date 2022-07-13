@@ -141,7 +141,7 @@ def handle_connection(client, addr):
             transport.start_server(server=server)
 
         except paramiko.SSHException:
-            print('*** SSH negotiatifon failed.')
+            print('*** SSH negotiation failed.')
             raise Exception("SSH negotiation failed")
 
         # wait for auth
