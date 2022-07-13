@@ -128,12 +128,12 @@ def handle_connection(client, addr):
             raise Exception("SSH negotiation failed")
 
         # wait for auth
-        chan = transport.accept(10)
+        chan = transport.accept(100)
         if chan is None:
             print('*** No channel (from '+client_ip+').')
             raise Exception("No channel")
         
-        chan.settimeout(10)
+        chan.settimeout(100)
 
         if transport.remote_mac != '':
             logging.info('Client mac ({}): {}'.format(client_ip, transport.remote_mac))
