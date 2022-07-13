@@ -66,7 +66,7 @@ class BasicSshHoneypot(paramiko.ServerInterface):
         return "password"#publickey
 
     def check_auth_password(self, username, password):
-        print(f"Username:{username},Password:{password}, IP")
+        print(f"Username:{username},Password:{password}, IP:{self.client_ip}")
         if username == "root" and password == "Password123":
             logging.i('successful login ({}): username: {}, password: {}'.format(
                     self.client_ip, username, password))
