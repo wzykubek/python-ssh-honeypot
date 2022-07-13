@@ -50,12 +50,8 @@ class BasicSshHoneypot(paramiko.ServerInterface):
 
     def __init__(self, client_ip):
         self.client_ip = client_ip
-        print("got here fine")
-        try:
-            transport.close()
-            pass
-        except Exception:
-            pass
+        self.event = threading.Event()
+        
 
 
     def check_channel_request(self, kind, catchall):
