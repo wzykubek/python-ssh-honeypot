@@ -170,7 +170,7 @@ def handle_connection(client, addr):
             raise Exception("No shell request")
      
         try:
-            chan.send("Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-128-generic x86_64)\r\n\r\n")
+            chan.send("Welcome to Ubuntu 20.04 LTS (GNU/Linux 4.15.0-128-generic x86_64)\r\n\r\n")
             run = True
             while run:
                 chan.send("$ ")
