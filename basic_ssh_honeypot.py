@@ -67,42 +67,14 @@ class BasicSshHoneypot(paramiko.ServerInterface):
 
     def check_auth_password(self, username, password):
         print(f"Username:{username},Password:{password}, IP:{self.client_ip}")
-        if username == "root" and password == "Password123":
+        if username == "root":
             logging.i('successful login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Successful Login")
+                self.client_ip, username, password))
             return paramiko.AUTH_SUCCESSFUL 
-        elif username == "root" and password == "root":
-            logging.info('successful login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Successful Login")
-            return paramiko.AUTH_SUCCESSFUL
-        elif username == "root" and password == "123456":
-            logging.info('successful login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Successful Login")
-            return paramiko.AUTH_SUCCESSFUL
-        elif username == "root" and password == "654321":
-            logging.info('successful login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Successful Login")
-            return paramiko.AUTH_SUCCESSFUL
-        elif username == "root" and password == "rockyou":
-            logging.info('successful login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Successful Login")
-            return paramiko.AUTH_SUCCESSFUL
-        elif username == "root" and password == "iloveyou":
-            logging.info('successful login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Successful Login")
-            return paramiko.AUTH_SUCCESSFUL
         else:
-            logging.info('failed login ({}): username: {}, password: {}'.format(
-                    self.client_ip, username, password))
-            print("Failed Login")
+            logging.i('failed login ({}): username: {}, password: {}'.format(
+                self.client_ip, username, password))
             return paramiko.AUTH_FAILED
-        
 
     def check_channel_shell_request(self, channel):
         self.event.set()
