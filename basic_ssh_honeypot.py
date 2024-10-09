@@ -7,7 +7,7 @@ import traceback
 import logging
 import paramiko
 from binascii import hexlify
-from paramiko.py3compat import u
+import paramiko
 
 HOST_KEY = paramiko.RSAKey(filename='server.key')
 SSH_BANNER = "SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1"
